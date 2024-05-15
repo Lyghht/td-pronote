@@ -1,4 +1,4 @@
-function accueil() {
+function accueilPronote() {
   return (
     <div className="accueil">
       <h1>Accueil</h1>
@@ -12,3 +12,5 @@ function accueil() {
     </div>
   );
 }
+
+export default accueilPronote;

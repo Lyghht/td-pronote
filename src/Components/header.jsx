@@ -15,16 +15,19 @@ function Header() {
                 <div className="collapse navbar-collapse" id="navbarsExample02">
                     <ul className="navbar-nav mr-auto">
                         <li className="nav-item">
-                            <a className="nav-link" href="#">Accueil</a>
+                            <a className="nav-link" href="/">Accueil</a>
                         </li>
                         <li className="nav-item">
                             <a className="nav-link" href="/etudiants/">Etudiants</a>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" href="#">Enseignants</a>
+                            <a className="nav-link" href="/enseignants/">Enseignants</a>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" href="#">Matiere</a>
+                            <a className="nav-link" href="/note/">Note</a>
+                        </li>
+                        <li className="nav-item">
+                            <a className="nav-link" href="/matiere/">Matiere</a>
                         </li>
 
                     </ul>

@@ -4,6 +4,9 @@ import { useState } from 'react'
 import AccueilIUT from './Components/accueil'
 import Header from './Components/header'
 import Etudiants from './Components/Etudiants'
+import Enseignants from "./Components/Enseignants"
+import Note from "./Components/Note"
+import Matiere from "./Components/Matiere"
 
 function App() {
 
@@ -14,12 +17,11 @@ function App() {
       <Routes>
         <Route path="/" element={<AccueilIUT />}/>
         <Route path="/etudiants" element={<Etudiants />}/>
-  {/*       <Route path="/enseignants" element={<Enseignants />}/> */}
-  {/*       <Route path="/notes" element={<Notes />}/>
-        <Route path="/matieres" element={<Matieres />}/> */}      
+        <Route path="/enseignants" element={<Enseignants />}/>
+        <Route path="/note" element={<Note />}/>
+        <Route path="/matiere" element={<Matiere />}/>     
       </Routes>
     </Router>
-
     </>
   )
 }

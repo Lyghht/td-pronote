@@ -1,31 +1,40 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { getEtudiants, updateEtudiant, removeEtudiant } from './../../services/operationsEtuds';
 
 function Etudiants() {
+    const [etudiants, setEtudiants] = useState([]);
 
-    const initialData = [
-        { id: 1, first: 'Mark', last: 'Otto', handle: '@mdo' },
-        { id: 2, first: 'Jacob', last: 'Thornton', handle: '@fat' },
-        { id: 3, first: 'Larry', last: 'Bird', handle: '@twitter' }
-    ];
-
-
-    const [data, setData] = useState(initialData);
-
+    useEffect(() => {
+        getEtudiants((res) => {
+            setEtudiants(res.data);
+        });
+    }, []);
 
     const handleEdit = (id, field, value) => {
-        const updatedData = data.map(item => {
-            if (item.id === id) {
-                return { ...item, [field]: value };
+        updateEtudiant({ _id: id, [field]: value }, (res) => {
+            if (res.status === 200) {
+                const updatedEtudiants = etudiants.map(etudiant => {
+                    if (etudiant._id === id) {
+                        return { ...etudiant, [field]: value };
+                    }
+                    return etudiant;
+                });
+                setEtudiants(updatedEtudiants);
+            } else {
+                console.error("Erreur lors de la modification de l'étudiant :", res.data.error);
             }
-            return item;
         });
-        setData(updatedData);
     };
 
-
     const handleDelete = (id) => {
-        const updatedData = data.filter(item => item.id !== id);
-        setData(updatedData);
+        removeEtudiant(id, (res) => {
+            if (res.status === 200) {
+                const updatedEtudiants = etudiants.filter(etudiant => etudiant._id !== id);
+                setEtudiants(updatedEtudiants);
+            } else {
+                console.error("Erreur lors de la suppression de l'étudiant :", res.data.error);
+            }
+        });
     };
 
     return (
@@ -34,22 +43,40 @@ function Etudiants() {
                 <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">First</th>
-                        <th scope="col">Last</th>
-                        <th scope="col">Handle</th>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Prénom</th>
+                        <th scope="col">Numéro étudiant</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {data.map(({ id, first, last, handle }) => (
-                        <tr key={id}>
-                            <th scope="row">{id}</th>
-                            <td contentEditable onBlur={e => handleEdit(id, 'first', e.target.textContent)}>{first}</td>
-                            <td contentEditable onBlur={e => handleEdit(id, 'last', e.target.textContent)}>{last}</td>
-                            <td contentEditable onBlur={e => handleEdit(id, 'handle', e.target.textContent)}>{handle}</td>
+                    {etudiants.map(({ _id, Nom, Prenom, NumEtudiant }) => (
+                        <tr key={_id}>
+                            <th scope="row">{_id}</th>
                             <td>
-                                <button onClick={() => handleEdit(id, 'first', document.getElementById(id + 'first').textContent)}>Modifier</button>
-                                <button onClick={() => handleDelete(id)}>Supprimer</button>
+                                <input 
+                                    type="text" 
+                                    value={Nom} 
+                                    onChange={(e) => handleEdit(_id, 'Nom', e.target.value)}
+                                />
+                            </td>
+                            <td>
+                                <input 
+                                    type="text" 
+                                    value={Prenom} 
+                                    onChange={(e) => handleEdit(_id, 'Prenom', e.target.value)}
+                                />
+                            </td>
+                            <td>
+                                <input 
+                                    type="text" 
+                                    value={NumEtudiant} 
+                                    onChange={(e) => handleEdit(_id, 'NumEtudiant', e.target.value)}
+                                />
+                            </td>
+                            <td>
+                                <button onClick={() => handleEdit(_id, 'Nom', Nom)}>Modifier</button>
+                                <button onClick={() => handleDelete(_id)}>Supprimer</button>
                             </td>
                         </tr>
                     ))}

@@ -2,6 +2,6 @@
     position: fixed;
     bottom: 10px;
     right: 10px;
-    width: 200px; /* Ajustez la taille selon vos besoins */
-    height: auto; /* Conserve les proportions de l'image */
+    width: 200px;
+    height: auto; 
 }

@@ -1,14 +1,68 @@
 import React, { useEffect, useState } from 'react';
-import { getEtudiants, updateEtudiant, removeEtudiant } from './../../services/operationsEtuds';
+import { getEtudiants, addEtudiant, updateEtudiant, removeEtudiant } from './../../services/operationsEtuds';
+import 'bootstrap/dist/css/bootstrap.css'; 
+import Dropdown from 'react-bootstrap/Dropdown'; 
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import Form from 'react-bootstrap/Form';
 
 function Etudiants() {
     const [etudiants, setEtudiants] = useState([]);
+    const [modalShow, setModalShow] = React.useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 6;
+
+    const [newEtudiant, setNewEtudiant] = useState({
+        NumEtudiant: '',
+        Nom: '',
+        Prenom: '',
+        DatenET: ''
+    });
 
     useEffect(() => {
         getEtudiants((res) => {
             setEtudiants(res.data);
         });
     }, []);
+
+    // Calcul de l'index de début et de fin pour les étudiants à afficher
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentEtudiants = etudiants.slice(indexOfFirstItem, indexOfLastItem);
+
+    // Fonction pour changer de page
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+    // Fonction pour passer à la page suivante
+    const nextPage = () => {
+        if (currentPage < Math.ceil(etudiants.length / itemsPerPage)) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    // Fonction pour passer à la page précédente
+    const prevPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+
+    const handleAdd = () => {
+        addEtudiant(newEtudiant, (res) => {
+            if (res.status === 201) {
+                setEtudiants([...etudiants, res.data]); // Ajoute le nouvel étudiant à la liste
+                setModalShow(false); // Ferme la modal après l'ajout
+                setNewEtudiant({ // Réinitialise les valeurs du nouvel étudiant
+                    NumEtudiant: '',
+                    Nom: '',
+                    Prenom: '',
+                    DatenET: ''
+                });
+            } else {
+                console.error("Erreur lors de l'ajout de l'étudiant :", res.data.error);
+            }
+        });
+    };
 
     const handleEdit = (id, field, value) => {
         updateEtudiant({ _id: id, [field]: value }, (res) => {
@@ -38,7 +92,13 @@ function Etudiants() {
     };
 
     return (
-        <div>
+        <div className='container'>
+            <div className='text-center mb-5 mt-5'>
+                <h1 style={{fontFamily: "Chalkduster",fontWeight: "bold"}}>Liste des étudiants</h1>
+            </div>
+            <div className='justify-content-end d-flex mb-4 mt-4'>
+                <button className='btn btn-primary' onClick={() => setModalShow(true)}>Ajouter un étudiant</button>
+            </div>
             <table className="table">
                 <thead>
                     <tr>
@@ -46,17 +106,16 @@ function Etudiants() {
                         <th scope="col">Nom</th>
                         <th scope="col">Prénom</th>
                         <th scope="col">Date</th>
-                        <th scope="col">Actions</th>
+                        <th scope="col"></th>
                     </tr>
                 </thead>
                 <tbody>
-                    {etudiants.map(({ _id, Nom, Prenom, NumEtudiant, DatenET }) => (
+                    {currentEtudiants.map(({ _id, Nom, Prenom, NumEtudiant, DatenET }) => (
                         <tr key={_id}>
                             <td>
                                 <input 
                                     type="text"
                                     className="form-control" 
-                                    style={{width: "auto"}}
                                     value={NumEtudiant} 
                                     onChange={(e) => handleEdit(_id, 'NumEtudiant', e.target.value)}
                                 />
@@ -65,7 +124,6 @@ function Etudiants() {
                                 <input 
                                     type="text" 
                                     className="form-control" 
-                                    style={{width: "auto"}}
                                     value={Nom} 
                                     onChange={(e) => handleEdit(_id, 'Nom', e.target.value)}
                                 />
@@ -74,7 +132,6 @@ function Etudiants() {
                                 <input 
                                     type="text" 
                                     className="form-control"
-                                    style={{width: "auto"}} 
                                     value={Prenom} 
                                     onChange={(e) => handleEdit(_id, 'Prenom', e.target.value)}
                                 />
@@ -83,20 +140,135 @@ function Etudiants() {
                                 <input 
                                     type="text" 
                                     className="form-control" 
-                                    style={{width: "auto"}}
                                     value={DatenET} 
                                     onChange={(e) => handleEdit(_id, 'DatenET', e.target.value)}
                                 />
                             </td>
-                            <td className="d-flex justify-content-between pe-4">
-                                <button onClick={() => handleEdit(_id, 'Nom', Nom)} className="btn btn-dark">Modifier</button>
-                                <button onClick={() => handleDelete(_id)} className="btn btn-dark">Supprimer</button>
+                            
+                            <td>
+                           
+                            <Dropdown> 
+                                <Dropdown.Toggle variant="secondary" className="btn btn-dark"> 
+                                Actions 
+                                </Dropdown.Toggle> 
+                                <Dropdown.Menu> 
+                                <Dropdown.Item onClick={() => handleEdit(_id, 'Nom', Nom)} href="#"> 
+                                    Modifier
+                                </Dropdown.Item> 
+                                <Dropdown.Item onClick={() => handleDelete(_id)} href="#"> 
+                                    Supprimer
+                                </Dropdown.Item>  
+                                </Dropdown.Menu> 
+                            </Dropdown> 
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
+
+            {/* Pagination */}
+            <nav className='d-flex justify-content-center mt-4'>
+                <ul className='pagination'>
+                    {/* Bouton "Précédent" */}
+                    <li className='page-item'>
+                        <a onClick={prevPage} className='page-link'>
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+
+                    {/* Numéros de page */}
+                    {Array.from({ length: Math.ceil(etudiants.length / itemsPerPage) }, (_, i) => (
+                        <li key={i} className='page-item'>
+                            <a onClick={() => paginate(i + 1)} className='page-link'>
+                                {i + 1}
+                            </a>
+                        </li>
+                    ))}
+
+                    {/* Bouton "Suivant" */}
+                    <li className='page-item'>
+                        <a onClick={nextPage} className='page-link'>
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <MyVerticallyCenteredModal
+                show={modalShow}
+                onHide={() => setModalShow(false)}
+                handleAdd={handleAdd} // Passer la fonction handleAdd à la modal
+                newEtudiant={newEtudiant} // Passer les valeurs du nouvel étudiant à la modal
+                setNewEtudiant={setNewEtudiant} // Passer la fonction pour mettre à jour les valeurs du nouvel étudiant à la modal
+            />
         </div>
+    );
+}
+
+function MyVerticallyCenteredModal({ show, onHide, handleAdd, newEtudiant, setNewEtudiant }) {
+    return (
+        <Modal
+            show={show}
+            onHide={onHide}
+            size="lg"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
+        >
+            <Modal.Header closeButton>
+                <Modal.Title id="contained-modal-title-vcenter">
+                    Ajout d'un étudiant
+                </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <Form>
+                    <Form.Group className="mb-3" controlId="NumEtudiant">
+                        <Form.Label>Numéro étudiant</Form.Label>
+                        <Form.Control
+                            type="number"
+                            placeholder="Entrez le numéro étudiant"
+                            min={0}
+                            autoFocus
+                            value={newEtudiant.NumEtudiant}
+                            onChange={(e) => setNewEtudiant({ ...newEtudiant, NumEtudiant: e.target.value })}
+                        />
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="Nom">
+                        <Form.Label>Nom</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="Entrez le nom"
+                            value={newEtudiant.Nom}
+                            onChange={(e) => setNewEtudiant({ ...newEtudiant, Nom: e.target.value })}
+                        />
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="Prenom">
+                        <Form.Label>Prénom</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="Entrez le prénom"
+                            value={newEtudiant.Prenom}
+                            onChange={(e) => setNewEtudiant({ ...newEtudiant, Prenom: e.target.value })}
+                        />
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="DatenET">
+                        <Form.Label>Date de naissance</Form.Label>
+                        <Form.Control
+                            type="date"
+                            value={newEtudiant.DatenET}
+                            onChange={(e) => setNewEtudiant({ ...newEtudiant, DatenET: e.target.value })}
+                        />
+                    </Form.Group>
+                </Form>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={onHide}>
+                    Fermer
+                </Button>
+                <Button variant="primary" onClick={handleAdd}>
+                    Ajouter
+                </Button>
+            </Modal.Footer>
+        </Modal>
     );
 }
 

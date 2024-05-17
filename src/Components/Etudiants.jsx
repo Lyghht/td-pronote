@@ -5,13 +5,14 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
+import Alert from 'react-bootstrap/Alert';
 
 function Etudiants() {
     const [etudiants, setEtudiants] = useState([]);
     const [modalShow, setModalShow] = React.useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 6;
-
+    const [duplicateIdAlert, setDuplicateIdAlert] = useState(false); // Variable pour gérer l'affichage de l'alerte
     const [newEtudiant, setNewEtudiant] = useState({
         NumEtudiant: '',
         Nom: '',
@@ -50,23 +51,28 @@ function Etudiants() {
     };
 
     const handleAdd = () => {
-        addEtudiant(newEtudiant, (res) => {
-            if (res.status === 201) {
-                const updatedEtudiants = [...etudiants, newEtudiant];
-                // Trier à nouveau le tableau des étudiants par numéro d'étudiant
-                updatedEtudiants.sort((a, b) => a.NumEtudiant - b.NumEtudiant);
-                setEtudiants(updatedEtudiants);
-                setNewEtudiant({
-                    NumEtudiant: '',
-                    Nom: '',
-                    Prenom: '',
-                    DatenET: ''
-                });
-                setModalShow(false);
-            } else {
-                console.error("Erreur lors de l'ajout de l'étudiant :", DatenET);
-            }
-        });
+        // Vérifier si le numéro étudiant est déjà utilisé
+        if (etudiants.some(etudiant => etudiant.NumEtudiant === parseInt(newEtudiant.NumEtudiant))) {
+            setDuplicateIdAlert(true); // Afficher l'alerte
+        } else {
+            addEtudiant(newEtudiant, (res) => {
+                if (res.status === 201) {
+                    const updatedEtudiants = [...etudiants, newEtudiant];
+                    updatedEtudiants.sort((a, b) => a.NumEtudiant - b.NumEtudiant);
+                    setEtudiants(updatedEtudiants);
+                    setNewEtudiant({
+                        NumEtudiant: '',
+                        Nom: '',
+                        Prenom: '',
+                        DatenET: ''
+                    });
+                    setModalShow(false);
+                    setDuplicateIdAlert(false); // Cacher l'alerte si elle est affichée
+                } else {
+                    console.error("Erreur lors de l'ajout de l'étudiant :", DatenET);
+                }
+            });
+        }
     };
     
     
@@ -207,12 +213,13 @@ function Etudiants() {
                 handleAdd={handleAdd} // Passer la fonction handleAdd à la modal
                 newEtudiant={newEtudiant} // Passer les valeurs du nouvel étudiant à la modal
                 setNewEtudiant={setNewEtudiant} // Passer la fonction pour mettre à jour les valeurs du nouvel étudiant à la modal
+                duplicateIdAlert={duplicateIdAlert}
             />
         </div>
     );
 }
 
-function MyVerticallyCenteredModal({ show, onHide, handleAdd, newEtudiant, setNewEtudiant }) {
+function MyVerticallyCenteredModal({ show, onHide, handleAdd, newEtudiant, setNewEtudiant, duplicateIdAlert }) {
     return (
         <Modal
             show={show}
@@ -227,6 +234,11 @@ function MyVerticallyCenteredModal({ show, onHide, handleAdd, newEtudiant, setNe
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
+            {duplicateIdAlert && (
+                    <Alert variant="danger">
+                        Cet identifiant étudiant est déjà utilisé.
+                    </Alert>
+                )}
                 <Form>
                     <Form.Group className="mb-3" controlId="NumEtudiant">
                         <Form.Label>Numéro étudiant</Form.Label>

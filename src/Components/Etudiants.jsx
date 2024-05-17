@@ -42,20 +42,30 @@ function Etudiants() {
             <table className="table">
                 <thead>
                     <tr>
-                        <th scope="col">#</th>
+                        <th scope="col">Numéro étudiant</th>
                         <th scope="col">Nom</th>
                         <th scope="col">Prénom</th>
-                        <th scope="col">Numéro étudiant</th>
+                        <th scope="col">Date</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {etudiants.map(({ _id, Nom, Prenom, NumEtudiant }) => (
+                    {etudiants.map(({ _id, Nom, Prenom, NumEtudiant, DatenET }) => (
                         <tr key={_id}>
-                            <th scope="row">{_id}</th>
+                            <td>
+                                <input 
+                                    type="text"
+                                    className="form-control" 
+                                    style={{width: "auto"}}
+                                    value={NumEtudiant} 
+                                    onChange={(e) => handleEdit(_id, 'NumEtudiant', e.target.value)}
+                                />
+                            </td>
                             <td>
                                 <input 
                                     type="text" 
+                                    className="form-control" 
+                                    style={{width: "auto"}}
                                     value={Nom} 
                                     onChange={(e) => handleEdit(_id, 'Nom', e.target.value)}
                                 />
@@ -63,6 +73,8 @@ function Etudiants() {
                             <td>
                                 <input 
                                     type="text" 
+                                    className="form-control"
+                                    style={{width: "auto"}} 
                                     value={Prenom} 
                                     onChange={(e) => handleEdit(_id, 'Prenom', e.target.value)}
                                 />
@@ -70,13 +82,15 @@ function Etudiants() {
                             <td>
                                 <input 
                                     type="text" 
-                                    value={NumEtudiant} 
-                                    onChange={(e) => handleEdit(_id, 'NumEtudiant', e.target.value)}
+                                    className="form-control" 
+                                    style={{width: "auto"}}
+                                    value={DatenET} 
+                                    onChange={(e) => handleEdit(_id, 'DatenET', e.target.value)}
                                 />
                             </td>
-                            <td>
-                                <button onClick={() => handleEdit(_id, 'Nom', Nom)}>Modifier</button>
-                                <button onClick={() => handleDelete(_id)}>Supprimer</button>
+                            <td className="d-flex justify-content-between pe-4">
+                                <button onClick={() => handleEdit(_id, 'Nom', Nom)} className="btn btn-dark">Modifier</button>
+                                <button onClick={() => handleDelete(_id)} className="btn btn-dark">Supprimer</button>
                             </td>
                         </tr>
                     ))}

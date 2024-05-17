@@ -6,14 +6,17 @@ function AccueilIUT() {
         <div className="container mt-4 mb-4 text-center">
             <h1>Bienvenue sur IUT-note</h1>
         </div>
-        <div className="container mt-4 mb-4 text-center">
-            <h2>Informations de contact</h2>
-            <p>Avenue des Facultés</p>
-            <p>- Le Bailly -</p>
-            <p> 80025 AMIENS Cedex 1</p>
-            <p></p>
-            <p>Tél. +33(0)3.22.53.40.40</p>
-            <p>Fax. +33(0)3.22.89.66.33</p>
+        <div className="container mt-5 mb-5 text-center">
+          <div className="card" style={{display: "inline-block"}}>
+            <div className="card-body">
+              <h2 className="card-title">Informations de contact</h2>
+              <p className="card-text">Avenue des Facultés</p>
+              <p className="card-text">- Le Bailly -</p>
+              <p className="card-text mb-4"> 80025 AMIENS Cedex 1</p>
+              <p className="card-text">Tél. +33(0)3.22.53.40.40</p>
+              <p className="card-text">Fax. +33(0)3.22.89.66.33</p>
+            </div>
+          </div>
         </div>
         <img src="./src/assets/media/logo-IUT.png" alt="IUT" className="bottom-right-image" />
     </>

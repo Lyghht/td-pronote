@@ -21,7 +21,9 @@ function Etudiants() {
 
     useEffect(() => {
         getEtudiants((res) => {
-            setEtudiants(res.data);
+            // Trier les étudiants par numéro d'étudiant
+            const sortedEtudiants = res.data.sort((a, b) => a.NumEtudiant - b.NumEtudiant);
+            setEtudiants(sortedEtudiants);
         });
     }, []);
 
@@ -50,19 +52,24 @@ function Etudiants() {
     const handleAdd = () => {
         addEtudiant(newEtudiant, (res) => {
             if (res.status === 201) {
-                setEtudiants([...etudiants, res.data]); // Ajoute le nouvel étudiant à la liste
-                setModalShow(false); // Ferme la modal après l'ajout
-                setNewEtudiant({ // Réinitialise les valeurs du nouvel étudiant
+                const updatedEtudiants = [...etudiants, newEtudiant];
+                // Trier à nouveau le tableau des étudiants par numéro d'étudiant
+                updatedEtudiants.sort((a, b) => a.NumEtudiant - b.NumEtudiant);
+                setEtudiants(updatedEtudiants);
+                setNewEtudiant({
                     NumEtudiant: '',
                     Nom: '',
                     Prenom: '',
                     DatenET: ''
                 });
+                setModalShow(false);
             } else {
-                console.error("Erreur lors de l'ajout de l'étudiant :", res.data.error);
+                console.error("Erreur lors de l'ajout de l'étudiant :", DatenET);
             }
         });
     };
+    
+    
 
     const handleEdit = (id, field, value) => {
         updateEtudiant({ _id: id, [field]: value }, (res) => {

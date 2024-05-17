@@ -36,7 +36,7 @@ app.post("/Etudiants/add", async (req, res) => {
   let newEtudiant = new Etudiant(req.body);
   try {
     await newEtudiant.save();
-    res.status(200).send({ message: `${newEtud.Nom} à bien été ajouté.` });
+    res.status(201).send({ message: `${newEtudiant.Nom} à bien été ajouté.` });
   } catch (err) {
     res.status(400).send({error: `Erreur lors de l'ajout de l'étudiant :  ${err}`});
   }

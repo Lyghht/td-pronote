@@ -114,7 +114,7 @@ function Etudiants() {
             </div>
             <table className="table">
                 <thead>
-                    <tr>
+                    <tr className='text-center'>
                         <th scope="col">Numéro étudiant</th>
                         <th scope="col">Nom</th>
                         <th scope="col">Prénom</th>

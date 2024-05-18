@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getEtudiants, addEtudiant, updateEtudiant, removeEtudiant } from './../../services/operationsEtuds';
 import 'bootstrap/dist/css/bootstrap.css'; 
+import '/src/App.css';
 import Dropdown from 'react-bootstrap/Dropdown'; 
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
@@ -111,7 +112,7 @@ function Etudiants() {
                 <h1 style={{fontFamily: "Chalkduster",fontWeight: "bold"}}>Liste des étudiants</h1>
             </div>
             <div className='justify-content-between d-flex mb-4 mt-4'>
-                <button className='btn btn-primary' onClick={() => setModalShow(true)}>Ajouter un étudiant</button>
+                <button className='btn btn-gradient-logo' onClick={() => setModalShow(true)}>Ajouter un étudiant</button>
                 <Filter
                     etudiants={etudiants}
                     setEtudiants={setEtudiants}
@@ -335,7 +336,7 @@ function Filter({ etudiants, setEtudiants, itemsPerPage, setItemsPerPage }) {
 
     return (
         <>
-            <Button variant="primary" onClick={handleShow}>
+            <Button className='btn btn-gradient-logo' onClick={handleShow}>
                 Filtre
             </Button>
 
@@ -431,8 +432,9 @@ function Filter({ etudiants, setEtudiants, itemsPerPage, setItemsPerPage }) {
                                 onChange={(e) => setItemsPerPage(e.target.value)}
                             >
                                 <option value="6">6</option>
-                                <option value="12">10</option>
-                                <option value="24">20</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
                             </Form.Select>
                         </div>
                     </div>

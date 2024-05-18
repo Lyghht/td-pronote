@@ -6,12 +6,13 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import Alert from 'react-bootstrap/Alert';
+import Offcanvas from 'react-bootstrap/Offcanvas';
 
 function Etudiants() {
     const [etudiants, setEtudiants] = useState([]);
     const [modalShow, setModalShow] = React.useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 6;
+    const [itemsPerPage, setItemsPerPage] = useState(6);
     const [duplicateIdAlert, setDuplicateIdAlert] = useState(false); // Variable pour gérer l'affichage de l'alerte
     const [newEtudiant, setNewEtudiant] = useState({
         NumEtudiant: '',
@@ -109,8 +110,14 @@ function Etudiants() {
             <div className='text-center mb-5 mt-5'>
                 <h1 style={{fontFamily: "Chalkduster",fontWeight: "bold"}}>Liste des étudiants</h1>
             </div>
-            <div className='justify-content-end d-flex mb-4 mt-4'>
+            <div className='justify-content-between d-flex mb-4 mt-4'>
                 <button className='btn btn-primary' onClick={() => setModalShow(true)}>Ajouter un étudiant</button>
+                <Filter
+                    etudiants={etudiants}
+                    setEtudiants={setEtudiants}
+                    itemsPerPage={itemsPerPage}
+                    setItemsPerPage={setItemsPerPage}
+                />
             </div>
             <table className="table">
                 <thead>
@@ -290,5 +297,150 @@ function MyVerticallyCenteredModal({ show, onHide, handleAdd, newEtudiant, setNe
         </Modal>
     );
 }
+
+function Filter({ etudiants, setEtudiants, itemsPerPage, setItemsPerPage }) {
+    const [show, setShow] = useState(false);
+    const [activeSort, setActiveSort] = useState({ key: 'NumEtudiant', order: 'asc' });
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
+    // Fonction de trie par numéro étudiant
+    const sortByNumEtudiant = (ordre) => {
+        const sortedEtudiants = [...etudiants].sort((a, b) => ordre === 'asc' ? a.NumEtudiant - b.NumEtudiant : b.NumEtudiant - a.NumEtudiant);
+        setEtudiants(sortedEtudiants);
+        setActiveSort({ key: 'NumEtudiant', order: ordre });
+    };
+
+    // Fonction de trie par nom
+    const sortByNom = (ordre) => {
+        const sortedEtudiants = [...etudiants].sort((a, b) => ordre === 'asc' ? a.Nom.localeCompare(b.Nom) : b.Nom.localeCompare(a.Nom));
+        setEtudiants(sortedEtudiants);
+        setActiveSort({ key: 'Nom', order: ordre });
+    };
+
+    // Fonction de trie par prénom
+    const sortByPrenom = (ordre) => {
+        const sortedEtudiants = [...etudiants].sort((a, b) => ordre === 'asc' ? a.Prenom.localeCompare(b.Prenom) : b.Prenom.localeCompare(a.Prenom));
+        setEtudiants(sortedEtudiants);
+        setActiveSort({ key: 'Prenom', order: ordre });
+    };
+
+    // Fonction de trie par date de naissance
+    const sortByDatenET = (ordre) => {
+        const sortedEtudiants = [...etudiants].sort((a, b) => ordre === 'asc' ? a.DatenET.localeCompare(b.DatenET) : b.DatenET.localeCompare(a.DatenET));
+        setEtudiants(sortedEtudiants);
+        setActiveSort({ key: 'DatenET', order: ordre });
+    };
+
+    return (
+        <>
+            <Button variant="primary" onClick={handleShow}>
+                Filtre
+            </Button>
+
+            <Offcanvas show={show} onHide={handleClose} placement='end'>
+                <Offcanvas.Header closeButton>
+                    <Offcanvas.Title>
+                        <h2>Filtre de tri</h2>
+                    </Offcanvas.Title>
+                </Offcanvas.Header>
+                <Offcanvas.Body>
+                    <div className='card mb-3'>
+                        <div className='card-body'>
+                            <h4 className='card-title mb-3'>Trier par numéro étudiant</h4>
+                            <Button
+                                variant={activeSort.key === 'NumEtudiant' && activeSort.order === 'asc' ? 'primary' : 'secondary'}
+                                className="buttonFilter me-4 card-text"
+                                onClick={() => sortByNumEtudiant('asc')}
+                            >
+                                Croissant
+                            </Button>
+                            <Button
+                                variant={activeSort.key === 'NumEtudiant' && activeSort.order === 'desc' ? 'primary' : 'secondary'}
+                                className="buttonFilter card-text"
+                                onClick={() => sortByNumEtudiant('desc')}
+                            >
+                                Décroissant
+                            </Button>
+                        </div>
+                    </div>
+                    <div className='card mb-3'>
+                        <div className='card-body'>
+                            <h4 className='card-title mb-3'>Trier par nom</h4>
+                            <Button
+                                variant={activeSort.key === 'Nom' && activeSort.order === 'asc' ? 'primary' : 'secondary'}
+                                className="buttonFilter me-4 card-text"
+                                onClick={() => sortByNom('asc')}
+                            >
+                                Croissant
+                            </Button>
+                            <Button
+                                variant={activeSort.key === 'Nom' && activeSort.order === 'desc' ? 'primary' : 'secondary'}
+                                className="buttonFilter card-text"
+                                onClick={() => sortByNom('desc')}
+                            >
+                                Décroissant
+                            </Button>
+                        </div>
+                    </div>
+                    <div className='card mb-3'>
+                        <div className='card-body'>
+                            <h4 className='card-title mb-3'>Trier par prénom</h4>
+                            <Button
+                                variant={activeSort.key === 'Prenom' && activeSort.order === 'asc' ? 'primary' : 'secondary'}
+                                className="buttonFilter me-4"
+                                onClick={() => sortByPrenom('asc')}
+                            >
+                                Croissant
+                            </Button>
+                            <Button
+                                variant={activeSort.key === 'Prenom' && activeSort.order === 'desc' ? 'primary' : 'secondary'}
+                                className="buttonFilter"
+                                onClick={() => sortByPrenom('desc')}
+                            >
+                                Décroissant
+                            </Button>
+                        </div>
+                    </div>
+                    <div className='card mb-3'>
+                        <div className='card-body'>
+                            <h4 className='card-title mb-3'>Trier par date de naissance</h4>
+                            <Button
+                                variant={activeSort.key === 'DatenET' && activeSort.order === 'asc' ? 'primary' : 'secondary'}
+                                className="buttonFilter me-4"
+                                onClick={() => sortByDatenET('asc')}
+                            >
+                                Croissant
+                            </Button>
+                            <Button
+                                variant={activeSort.key === 'DatenET' && activeSort.order === 'desc' ? 'primary' : 'secondary'}
+                                className="buttonFilter"
+                                onClick={() => sortByDatenET('desc')}
+                            >
+                                Décroissant
+                            </Button>
+                        </div>
+                    </div>
+                    <div className='card'>
+                        <div className='card-body'>
+                            <h4 className='card-title mb-3'>Nombre d'éléments par page</h4>
+                            <Form.Select
+                                aria-label="Default select example"
+                                value={itemsPerPage}
+                                onChange={(e) => setItemsPerPage(e.target.value)}
+                            >
+                                <option value="6">6</option>
+                                <option value="12">10</option>
+                                <option value="24">20</option>
+                            </Form.Select>
+                        </div>
+                    </div>
+                </Offcanvas.Body>
+            </Offcanvas>
+        </>
+    );
+}
+  
 
 export default Etudiants;

@@ -7,7 +7,10 @@ function Header() {
 
 
             <nav className="navbar navbar-expand navbar-dark bg-primary">
-                <a className="navbar-brand ms-3" href="/">Pronote</a>
+                <a className="navbar-brand ms-3" href="/">
+                    <img src="/src/assets/media/logo-nota-removebg.png" alt="IUT d'Amiens" width="30" height="30" className="d-inline-block align-text-top" />
+                    Nota
+                </a>
                 <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample02" aria-controls="navbarsExample02" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>

@@ -4,9 +4,12 @@ function AccueilIUT() {
   return (
     <>
         <div className="container mt-4 mb-4 text-center">
-            <h1>Bienvenue sur IUT-note</h1>
+            <h1>Bienvenue sur Nota</h1>
         </div>
-        <div className="container mt-5 mb-5 text-center">
+        <div className="container mt-4 mb-4 text-center">
+          <img src="/src/assets/media/logo-nota.png" style={{width: "200px",height: "200px"}} alt="Nota" />
+        </div>
+        <div className="container mt-4 mb-4 text-center">
           <div className="card" style={{display: "inline-block"}}>
             <div className="card-body">
               <h2 className="card-title">Informations de contact</h2>

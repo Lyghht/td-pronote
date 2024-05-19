@@ -8,13 +8,15 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import Alert from 'react-bootstrap/Alert';
 import Offcanvas from 'react-bootstrap/Offcanvas';
+import { set } from 'mongoose';
 
 function Enseignants() {
     const [enseignants, setEnseignants] = useState([]);
     const [modalShow, setModalShow] = React.useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(6);
-    const [duplicateIdAlert, setDuplicateIdAlert] = useState(false); // Variable pour gérer l'affichage de l'alerte
+    const [duplicateIdAlertModal, setDuplicateIdAlertModal] = useState(false); // Variable pour gérer l'affichage de l'alerte
+    const [duplicateIdAlert, setDuplicateIdAlert] = useState(false);
     const [newEnseignant, setnewEnseignant] = useState({
         CodeEns: '',
         NomEns: '',
@@ -56,7 +58,7 @@ function Enseignants() {
     const handleAdd = () => {
         // Vérifier si le numéro étudiant est déjà utilisé
         if (enseignants.some(enseignant => enseignant.CodeEns === parseInt(newEnseignant.CodeEns))) {
-            setDuplicateIdAlert(true); // Afficher l'alerte
+            setDuplicateIdAlertModal(true); // Afficher l'alerte
         } else {
             addEnseignant(newEnseignant, (res) => {
                 if (res.status === 201) {
@@ -71,7 +73,8 @@ function Enseignants() {
                         CodeMat: ''
                     });
                     setModalShow(false);
-                    setDuplicateIdAlert(false); // Cacher l'alerte si elle est affichée
+                    setDuplicateIdAlertModal(false); // Cacher l'alerte si elle est affichée
+                    setDuplicateIdAlert(false);
                 } else {
                     console.error("Erreur lors de l'ajout de l'enseignant :", CodeEns)
                 }
@@ -89,6 +92,10 @@ function Enseignants() {
     };
 
     const handleConfirmEdit = (id) => {
+        if (enseignants.some(enseignant => enseignant.CodeEns === parseInt(pendingEdits[id].CodeEns) && enseignant._id !== id)) {
+            setDuplicateIdAlert(true);
+            return;
+        }
         const pendingEdit = pendingEdits[id];
         if (pendingEdit) {
             updateEnseignant({ _id: id, ...pendingEdit }, (res) => {
@@ -106,6 +113,7 @@ function Enseignants() {
                     console.error("Erreur lors de la modification de l'enseignant :", res.data.error);
                 }
             });
+            setDuplicateIdAlert(false);
         }
     };
 
@@ -141,6 +149,11 @@ function Enseignants() {
                     setItemsPerPage={setItemsPerPage}
                 />
             </div>
+            {duplicateIdAlert && (
+                <Alert variant="danger">
+                    Cet identifiant enseignant est déjà utilisé.
+                </Alert>
+            )}
             <table className="table table-sm">
                 <thead>
                     <tr className='text-center'>
@@ -252,7 +265,7 @@ function Enseignants() {
                 handleAdd={handleAdd} // Passer la fonction handleAdd à la modal
                 newEnseignant={newEnseignant} // Passer les valeurs du nouvel étudiant à la modal
                 setnewEnseignant={setnewEnseignant} // Passer la fonction pour mettre à jour les valeurs du nouvel étudiant à la modal
-                duplicateIdAlert={duplicateIdAlert}
+                duplicateIdAlert={duplicateIdAlertModal}
             />
         </div>
     );

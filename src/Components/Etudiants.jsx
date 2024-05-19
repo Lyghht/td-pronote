@@ -8,13 +8,15 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import Alert from 'react-bootstrap/Alert';
 import Offcanvas from 'react-bootstrap/Offcanvas';
+import { set } from 'mongoose';
 
 function Etudiants() {
     const [etudiants, setEtudiants] = useState([]);
     const [modalShow, setModalShow] = React.useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(6);
-    const [duplicateIdAlert, setDuplicateIdAlert] = useState(false); // Variable pour gérer l'affichage de l'alerte
+    const [duplicateIdAlertModal, setDuplicateIdAlertModal] = useState(false); // Variable pour gérer l'affichage de l'alerte
+    const [duplicateIdAlert, setDuplicateIdAlert] = useState(false);
     const [newEtudiant, setNewEtudiant] = useState({
         NumEtudiant: '',
         Nom: '',
@@ -75,7 +77,7 @@ function Etudiants() {
     const handleAdd = () => {
         // Vérifier si le numéro étudiant est déjà utilisé
         if (etudiants.some(etudiant => etudiant.NumEtudiant === parseInt(newEtudiant.NumEtudiant))) {
-            setDuplicateIdAlert(true); // Afficher l'alerte
+            setDuplicateIdAlertModal(true); // Afficher l'alerte
         } else {
             addEtudiant(newEtudiant, (res) => {
                 if (res.status === 201) {
@@ -89,7 +91,8 @@ function Etudiants() {
                         DatenET: ''
                     });
                     setModalShow(false);
-                    setDuplicateIdAlert(false); // Cacher l'alerte si elle est affichée
+                    setDuplicateIdAlertModal(false); // Cacher l'alerte si elle est affichée
+                    setDuplicateIdAlert(false);
                 } else {
                     console.error("Erreur lors de l'ajout de l'étudiant :", DatenET);
                 }
@@ -107,6 +110,11 @@ function Etudiants() {
     };
 
     const handleConfirmEdit = (id) => {
+        //Vérifier si l'id de l'étudiant est déjà utilisé
+        if (etudiants.some(etudiant => etudiant.NumEtudiant === parseInt(pendingEdits[id].NumEtudiant))) {
+            setDuplicateIdAlert(true); // Afficher l'alerte
+            return;
+        }
         const pendingEdit = pendingEdits[id];
         if (pendingEdit) {
             updateEtudiant({ _id: id, ...pendingEdit }, (res) => {
@@ -124,6 +132,7 @@ function Etudiants() {
                     console.error("Erreur lors de la modification de l'étudiant :", res.data.error);
                 }
             });
+            setDuplicateIdAlert(false); // Cacher l'alerte si elle est affichée
         }
     };
 
@@ -159,6 +168,11 @@ function Etudiants() {
                     setItemsPerPage={setItemsPerPage}
                 />
             </div>
+            {duplicateIdAlert && (
+                    <Alert variant="danger">
+                        Cet identifiant étudiant est déjà utilisé.
+                    </Alert>
+                )}
             <table className="table table-sm">
                 <thead>
                     <tr className='text-center'>
@@ -262,7 +276,7 @@ function Etudiants() {
                 handleAdd={handleAdd} // Passer la fonction handleAdd à la modal
                 newEtudiant={newEtudiant} // Passer les valeurs du nouvel étudiant à la modal
                 setNewEtudiant={setNewEtudiant} // Passer la fonction pour mettre à jour les valeurs du nouvel étudiant à la modal
-                duplicateIdAlert={duplicateIdAlert}
+                duplicateIdAlert={duplicateIdAlertModal}
             />
         </div>
     );

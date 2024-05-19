@@ -6,3 +6,7 @@
   font-weight: bold;
   border: 3px solid #eee;
 }
+
+.btn-gradient-logo:hover {
+  color: #fff;
+}

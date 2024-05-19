@@ -81,20 +81,39 @@ function Enseignants() {
     
     
 
+    const [pendingEdits, setPendingEdits] = useState({});
+
     const handleEdit = (id, field, value) => {
-        updateEnseignant({ _id: id, [field]: value }, (res) => {
-            if (res.status === 200) {
-                const updatedEnseignants = enseignants.map(enseignant => {
-                    if (enseignant._id === id) {
-                        return { ...enseignant, [field]: value };
-                    }
-                    return enseignant;
-                });
-                setEnseignants(updatedEnseignants);
-            } else {
-                console.error("Erreur lors de la modification de l'étudiant :", res.data.error);
-            }
-        });
+        // Stocker les modifications en attente pour chaque ligne
+        setPendingEdits({ ...pendingEdits, [id]: { ...pendingEdits[id], [field]: value } });
+    };
+
+    const handleConfirmEdit = (id) => {
+        const pendingEdit = pendingEdits[id];
+        if (pendingEdit) {
+            updateEnseignant({ _id: id, ...pendingEdit }, (res) => {
+                if (res.status === 200) {
+                    const updatedEnseignants = enseignants.map(enseignant => {
+                        if (enseignant._id === id) {
+                            return { ...enseignant, ...pendingEdit };
+                        }
+                        return enseignant;
+                    });
+                    setEnseignants(updatedEnseignants);
+                    // Effacer les modifications en attente après la validation
+                    setPendingEdits({ ...pendingEdits, [id]: {} });
+                } else {
+                    console.error("Erreur lors de la modification de l'enseignant :", res.data.error);
+                }
+            });
+        }
+    };
+
+    const handleCancelEdit = (id) => {
+        // Annuler les modifications en attente pour cette ligne
+        const updatedPendingEdits = { ...pendingEdits };
+        delete updatedPendingEdits[id];
+        setPendingEdits(updatedPendingEdits);
     };
 
     const handleDelete = (id) => {
@@ -134,66 +153,69 @@ function Enseignants() {
                     </tr>
                 </thead>
                 <tbody>
-                    {currentEnseignants.map(({ _id, NomEns, PrenomEns, CodeEns, GradeEns, CodeMat }) => (
-                        <tr key={_id}>
-                            <td>
-                                <input 
-                                    type="text"
-                                    className="form-control" 
-                                    value={CodeEns} 
-                                    onChange={(e) => handleEdit(_id, 'CodeEns', e.target.value)}
-                                />
-                            </td>
-                            <td>
-                                <input 
-                                    type="text" 
-                                    className="form-control" 
-                                    value={NomEns} 
-                                    onChange={(e) => handleEdit(_id, 'NomEns', e.target.value)}
-                                />
-                            </td>
-                            <td>
-                                <input 
-                                    type="text" 
-                                    className="form-control"
-                                    value={PrenomEns} 
-                                    onChange={(e) => handleEdit(_id, 'PrenomEns', e.target.value)}
-                                />
-                            </td>
-                            <td>
-                                <input 
-                                    type="text" 
-                                    className="form-control" 
-                                    value={GradeEns} 
-                                    onChange={(e) => handleEdit(_id, 'GradeEns', e.target.value)}
-                                />
-                            </td>
-                            <td>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    value={CodeMat}
-                                    onChange={(e) => handleEdit(_id, 'CodeMat', e.target.value)}
-                                />
-                            </td>
-                            <td>
+                {currentEnseignants.map(({ _id, NomEns, PrenomEns, CodeEns, GradeEns, CodeMat }) => (
+                    <tr key={_id}>
+                        <td>
+                            <input 
+                                type="text"
+                                className="form-control" 
+                                value={pendingEdits[_id]?.CodeEns !== undefined ? pendingEdits[_id].CodeEns : CodeEns} 
+                                onChange={(e) => handleEdit(_id, 'CodeEns', e.target.value)}
+                            />
+                        </td>
+                        <td>
+                            <input 
+                                type="text" 
+                                className="form-control" 
+                                value={pendingEdits[_id]?.NomEns !== undefined ? pendingEdits[_id].NomEns : NomEns} 
+                                onChange={(e) => handleEdit(_id, 'NomEns', e.target.value)}
+                            />
+                        </td>
+                        <td>
+                            <input 
+                                type="text" 
+                                className="form-control"
+                                value={pendingEdits[_id]?.PrenomEns !== undefined ? pendingEdits[_id].PrenomEns : PrenomEns} 
+                                onChange={(e) => handleEdit(_id, 'PrenomEns', e.target.value)}
+                            />
+                        </td>
+                        <td>
+                            <input 
+                                type="text" 
+                                className="form-control" 
+                                value={pendingEdits[_id]?.GradeEns !== undefined ? pendingEdits[_id].GradeEns : GradeEns} 
+                                onChange={(e) => handleEdit(_id, 'GradeEns', e.target.value)}
+                            />
+                        </td>
+                        <td>
+                            <input
+                                type="text"
+                                className="form-control"
+                                value={pendingEdits[_id]?.CodeMat !== undefined ? pendingEdits[_id].CodeMat : CodeMat}
+                                onChange={(e) => handleEdit(_id, 'CodeMat', e.target.value)}
+                            />
+                        </td>
+                        <td>
                             <Dropdown> 
                                 <Dropdown.Toggle variant="secondary" className="btn btn-dark"> 
                                 Actions 
                                 </Dropdown.Toggle> 
                                 <Dropdown.Menu> 
-                                <Dropdown.Item onClick={() => handleEdit(_id, 'NomEns', NomEns)} href="#"> 
+                                <Dropdown.Item onClick={() => handleConfirmEdit(_id)} href="#"> 
                                     Modifier
+                                </Dropdown.Item>
+                                <Dropdown.Item onClick={() => handleCancelEdit(_id)} href="#"> 
+                                    Annuler
                                 </Dropdown.Item> 
                                 <Dropdown.Item onClick={() => handleDelete(_id)} href="#"> 
                                     Supprimer
                                 </Dropdown.Item>  
                                 </Dropdown.Menu> 
                             </Dropdown> 
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
+                        </td>
+                    </tr>
+                ))}
+            </tbody>
             </table>
 
             {/* Pagination */}
@@ -363,9 +385,9 @@ function Filter({ enseignants, setEnseignants, itemsPerPage, setItemsPerPage }) 
 
     return (
         <>
-            <Button className='btn btn-gradient-logo' onClick={handleShow}>
+            <button className='btn btn-gradient-logo' onClick={handleShow}>
                 Filtre
-            </Button>
+            </button>
 
             <Offcanvas show={show} onHide={handleClose} placement='end'>
                 <Offcanvas.Header closeButton>

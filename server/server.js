@@ -83,7 +83,7 @@ app.post("/Enseignants/add", async (req, res) => {
   let newEnseignant = new Enseignant(req.body);
   try {
     await newEnseignant.save();
-    res.status(200).send({ message: `${newEnseignant.NomEns} à bien été ajouté.` });
+    res.status(201).send({ message: `${newEnseignant.NomEns} à bien été ajouté.` });
   } catch (err) {
     res.status(400).send({error: `Erreur lors de l'ajout de l'enseignant :  ${err}`});
   }
@@ -130,7 +130,7 @@ app.post("/Matieres/add", async (req, res) => {
   let newMatiere = new Matiere(req.body);
   try {
     await newMatiere.save();
-    res.status(200).send({ message: `${newMatiere.LibelleMat} à bien été ajouté.` });
+    res.status(201).send({ message: `${newMatiere.LibelleMat} à bien été ajouté.` });
   } catch (err) {
     res.status(400).send({error: `Erreur lors de l'ajout de la matière :  ${err}`});
   }
@@ -177,7 +177,7 @@ app.post("/Notes/add", async (req, res) => {
   let newNote = new Note(req.body);
   try {
     await newNote.save();
-    res.status(200).send({ message: `La note de ${newNote.NumEtudiant} à bien été ajouté.` });
+    res.status(201).send({ message: `La note de ${newNote.NumEtudiant} à bien été ajouté.` });
   } catch (err) {
     res.status(400).send({error: `Erreur lors de l'ajout de la note :  ${err}`});
   }

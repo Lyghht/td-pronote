@@ -16,8 +16,8 @@ function Header() {
                 <Nav.Link href="/">Accueil</Nav.Link>
                 <Nav.Link href="/etudiants/">Etudiants</Nav.Link>
                 <Nav.Link href="/enseignants/">Enseignants</Nav.Link>
-                <Nav.Link href="/note/">Note</Nav.Link>
-                <Nav.Link href="/matiere/">Matiere</Nav.Link>
+                <Nav.Link href="/note/">Notes</Nav.Link>
+                <Nav.Link href="/matiere/">Matieres</Nav.Link>
             </Nav>
             </Navbar.Collapse>
         </Container>

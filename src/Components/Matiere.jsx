@@ -203,12 +203,11 @@ function Matiere() {
                             <input
                                 type="number"
                                 className="form-control"
-                                min={0}
+                                min={1}
                                 value={pendingEdits[_id]?.CoefMat !== undefined ? pendingEdits[_id].CoefMat : CoefMat}
                                 onChange={(e) => handleEdit(_id, 'CoefMat', e.target.value)}
                             />
-                        </td>
-                            
+                        </td>  
                             <td>
                             <Dropdown> 
                                 <Dropdown.Toggle variant="secondary" className="btn btn-dark"> 

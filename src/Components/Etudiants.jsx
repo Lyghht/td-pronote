@@ -8,7 +8,6 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import Alert from 'react-bootstrap/Alert';
 import Offcanvas from 'react-bootstrap/Offcanvas';
-import { set } from 'mongoose';
 
 function Etudiants() {
     const [etudiants, setEtudiants] = useState([]);

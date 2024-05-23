@@ -134,7 +134,7 @@ function Matiere() {
     return (
         <div className='container'>
             <div className='text-center mb-5 mt-5'>
-                <h1 style={{fontFamily: "Chalkduster",fontWeight: "bold"}}>Liste des matières</h1>
+                <h1 style={{fontFamily: "Chalkduster", fontWeight: "bold"}}>Liste des matières</h1>
             </div>
             <div className='justify-content-between d-flex mb-4 mt-4'>
                 <button className='btn btn-gradient-logo' onClick={() => setModalShow(true)}>Ajouter une matière</button>

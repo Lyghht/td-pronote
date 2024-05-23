@@ -20,7 +20,7 @@ function Matiere() {
     const [newMatiere, setNewMatiere] = useState({
         CodeMat: '',
         LibelleMat: '',
-        CoefMat: ''
+        CoeffMat: ''
     });
 
     useEffect(() => {
@@ -30,26 +30,6 @@ function Matiere() {
             setMatieres(sortedMatieres);
         });
     }, []);
-
-    // Fonctions pour formater la date
-    function parseDate(dateString) {
-        const parts = dateString.split('/');
-        if (parts.length === 3) {
-          // Format dd/MM/yyyy
-          const day = parseInt(parts[0], 10);
-          const month = parseInt(parts[1], 10) - 1; // Months are 0-based in JS
-          const year = parseInt(parts[2], 10);
-          return new Date(year, month, day);
-        }
-        return new Date(dateString); // Assume it's in yyyy-mm-dd format
-      }
-      
-      function formatDate(date) {
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-        const year = date.getFullYear();
-        return `${day}/${month}/${year}`;
-      }
 
     // Calcul de l'index de début et de fin pour les étudiants à afficher
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -86,13 +66,13 @@ function Matiere() {
                     setNewMatiere({
                         CodeMat: '',
                         LibelleMat: '',
-                        CoefMat: ''
+                        CoeffMat: ''
                     });
                     setModalShow(false);
                     setDuplicateIdAlertModal(false); // Cacher l'alerte si elle est affichée
                     setDuplicateIdAlert(false);
                 } else {
-                    console.error("Erreur lors de l'ajout de l'étudiant :", DatenET);
+                    console.error("Erreur lors de l'ajout de l'étudiant :", res.status);
                 }
             });
         }
@@ -180,7 +160,7 @@ function Matiere() {
                     </tr>
                 </thead>
                 <tbody>
-                    {currentMatieres.map(({ _id, CodeMat, LibelleMat, CoefMat }) => (
+                    {currentMatieres.map(({ _id, CodeMat, LibelleMat, CoeffMat }) => (
                         <tr key={_id}>
                         <td>
                             <input
@@ -204,8 +184,8 @@ function Matiere() {
                                 type="number"
                                 className="form-control"
                                 min={1}
-                                value={pendingEdits[_id]?.CoefMat !== undefined ? pendingEdits[_id].CoefMat : CoefMat}
-                                onChange={(e) => handleEdit(_id, 'CoefMat', e.target.value)}
+                                value={pendingEdits[_id]?.CoeffMat !== undefined ? pendingEdits[_id].CoeffMat : CoeffMat}
+                                onChange={(e) => handleEdit(_id, 'CoeffMat', e.target.value)}
                             />
                         </td>  
                             <td>
@@ -296,7 +276,7 @@ function MyVerticallyCenteredModal({ show, onHide, handleAdd, newMatiere, setNew
                         <Form.Label>Numéro matière</Form.Label>
                         <Form.Control
                             type="number"
-                            placeholder="Entrez le numéro étudiant"
+                            placeholder="Entrez le numéro matière"
                             min={0}
                             autoFocus
                             value={newMatiere.CodeMat}
@@ -307,7 +287,7 @@ function MyVerticallyCenteredModal({ show, onHide, handleAdd, newMatiere, setNew
                         <Form.Label>Libellé</Form.Label>
                         <Form.Control
                             type="text"
-                            placeholder="Entrez le nom"
+                            placeholder="Entrez le libellé"
                             value={newMatiere.LibelleMat}
                             onChange={(e) => setNewMatiere({ ...newMatiere, LibelleMat: e.target.value })}
                         />
@@ -316,9 +296,9 @@ function MyVerticallyCenteredModal({ show, onHide, handleAdd, newMatiere, setNew
                         <Form.Label>Coefficient</Form.Label>
                         <Form.Control
                             type="number"
-                            placeholder="Entrez le prénom"
-                            value={newMatiere.CoefMat}
-                            onChange={(e) => setNewMatiere({ ...newMatiere, CoefMat: e.target.value })}
+                            placeholder="Entrez le coefficient"
+                            value={newMatiere.CoeffMat}
+                            onChange={(e) => setNewMatiere({ ...newMatiere, CoeffMat: e.target.value })}
                         />
                     </Form.Group>
                 </Form>
@@ -357,10 +337,10 @@ function Filter({ matieres, setMatieres, itemsPerPage, setItemsPerPage }) {
     };
 
     // Fonction de trie par prénom
-    const sortByCoefMat = (ordre) => {
-        const sortedMatieres = [...matieres].sort((a, b) => ordre === 'asc' ? a.CoefMat - b.CoefMat : b.CoefMat - a.CoefMat);
+    const sortByCoeffMat = (ordre) => {
+        const sortedMatieres = [...matieres].sort((a, b) => ordre === 'asc' ? a.CoeffMat - b.CoeffMat : b.CoeffMat - a.CoeffMat);
         setMatieres(sortedMatieres);
-        setActiveSort({ key: 'CoefMat', order: ordre });
+        setActiveSort({ key: 'CoeffMat', order: ordre });
     };
 
     return (
@@ -416,7 +396,7 @@ function Filter({ matieres, setMatieres, itemsPerPage, setItemsPerPage }) {
                     </div>
                     <div className='card mb-3'>
                         <div className='card-body'>
-                            <h4 className='card-title mb-3'>Trier par Coefficient</h4>
+                            <h4 className='card-title mb-3'>Trier par Coeffficient</h4>
                             <Button
                                 variant={activeSort.key === 'CoefMat' && activeSort.order === 'asc' ? 'primary' : 'secondary'}
                                 className="buttonFilter me-4"
@@ -425,9 +405,9 @@ function Filter({ matieres, setMatieres, itemsPerPage, setItemsPerPage }) {
                                 Croissant
                             </Button>
                             <Button
-                                variant={activeSort.key === 'CoefMat' && activeSort.order === 'desc' ? 'primary' : 'secondary'}
+                                variant={activeSort.key === 'CoeffMat' && activeSort.order === 'desc' ? 'primary' : 'secondary'}
                                 className="buttonFilter"
-                                onClick={() => sortByCoefMat('desc')}
+                                onClick={() => sortByCoeffMat('desc')}
                             >
                                 Décroissant
                             </Button>

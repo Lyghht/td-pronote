@@ -93,7 +93,7 @@ function Note() {
                     setDuplicateIdAlertModal(false); // Cacher l'alerte si elle est affichée
                     setDuplicateIdAlert(false);
                 } else {
-                    console.error("Erreur lors de l'ajout de l'étudiant :", DatenET);
+                    console.error("Erreur lors de l'ajout de l'étudiant :", res.data.error);
                 }
             });
         }

@@ -21,7 +21,7 @@ function AccueilIUT() {
             </div>
           </div>
         </div>
-        <img src="./src/assets/media/logo-IUT.png" alt="IUT" className="bottom-right-image" />
+        <a href="https://iut-amiens.u-picardie.fr/"><img src="./src/assets/media/logo-IUT.png" alt="IUT" className="bottom-right-image"/></a>
     </>
   );
 }

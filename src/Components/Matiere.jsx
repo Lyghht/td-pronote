@@ -20,7 +20,7 @@ function Matiere() {
     const [newMatiere, setNewMatiere] = useState({
         CodeMat: '',
         LibelleMat: '',
-        CoeffMat: ''
+        CoefMat: ''
     });
 
     useEffect(() => {
@@ -70,7 +70,7 @@ function Matiere() {
                     setNewMatiere({
                         CodeMat: '',
                         LibelleMat: '',
-                        CoeffMat: ''
+                        CoefMat: ''
                     });
                     setModalShow(false);
                     setDuplicateIdAlertModal(false); // Cacher l'alerte si elle est affichée
@@ -164,7 +164,7 @@ function Matiere() {
                     </tr>
                 </thead>
                 <tbody>
-                    {currentMatieres.map(({ _id, CodeMat, LibelleMat, CoeffMat }) => (
+                    {currentMatieres.map(({ _id, CodeMat, LibelleMat, CoefMat }) => (
                         <tr key={_id}>
                         <td>
                             <input
@@ -188,8 +188,8 @@ function Matiere() {
                                 type="number"
                                 className="form-control"
                                 min={1}
-                                value={pendingEdits[_id]?.CoeffMat !== undefined ? pendingEdits[_id].CoeffMat : CoeffMat}
-                                onChange={(e) => handleEdit(_id, 'CoeffMat', e.target.value)}
+                                value={pendingEdits[_id]?.CoefMat !== undefined ? pendingEdits[_id].CoefMat : CoefMat}
+                                onChange={(e) => handleEdit(_id, 'CoefMat', e.target.value)}
                             />
                         </td>  
                             <td>
@@ -309,8 +309,8 @@ function MyVerticallyCenteredModal({ show, onHide, handleAdd, newMatiere, setNew
                         <Form.Control
                             type="number"
                             placeholder="Entrez le coefficient"
-                            value={newMatiere.CoeffMat}
-                            onChange={(e) => setNewMatiere({ ...newMatiere, CoeffMat: e.target.value })}
+                            value={newMatiere.CoefMat}
+                            onChange={(e) => setNewMatiere({ ...newMatiere, CoefMat: e.target.value })}
                         />
                     </Form.Group>
                 </Form>
@@ -349,10 +349,10 @@ function Filter({ matieres, setMatieres, itemsPerPage, setItemsPerPage }) {
     };
 
     // Fonction de trie par prénom
-    const sortByCoeffMat = (ordre) => {
-        const sortedMatieres = [...matieres].sort((a, b) => ordre === 'asc' ? a.CoeffMat - b.CoeffMat : b.CoeffMat - a.CoeffMat);
+    const sortByCoefMat = (ordre) => {
+        const sortedMatieres = [...matieres].sort((a, b) => ordre === 'asc' ? a.CoefMat - b.CoefMat : b.CoefMat - a.CoefMat);
         setMatieres(sortedMatieres);
-        setActiveSort({ key: 'CoeffMat', order: ordre });
+        setActiveSort({ key: 'CoefMat', order: ordre });
     };
 
     return (
@@ -417,9 +417,9 @@ function Filter({ matieres, setMatieres, itemsPerPage, setItemsPerPage }) {
                                 Croissant
                             </Button>
                             <Button
-                                variant={activeSort.key === 'CoeffMat' && activeSort.order === 'desc' ? 'primary' : 'secondary'}
+                                variant={activeSort.key === 'CoefMat' && activeSort.order === 'desc' ? 'primary' : 'secondary'}
                                 className="buttonFilter"
-                                onClick={() => sortByCoeffMat('desc')}
+                                onClick={() => sortByCoefMat('desc')}
                             >
                                 Décroissant
                             </Button>

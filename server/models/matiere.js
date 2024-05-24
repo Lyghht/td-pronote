@@ -10,7 +10,7 @@ const matiereSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  CoeffMat: {
+  CoefMat: {
     type: Number,
     required: true
   }

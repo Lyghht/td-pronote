@@ -62,13 +62,17 @@ function Note() {
     // Fonction pour passer à la page suivante
     const nextPage = () => {
         if (currentPage < Math.ceil(notes.length / itemsPerPage)) {
+            document.querySelector(`li[data-key="${currentPage+1}"]`).querySelector("a").className = "page-link bg-primary text-white"
+            document.querySelector(`li[data-key="${currentPage}"]`).querySelector("a").className = "page-link"
             setCurrentPage(currentPage + 1);
-        }
-    };
+          }
+      };
 
     // Fonction pour passer à la page précédente
     const prevPage = () => {
         if (currentPage > 1) {
+            document.querySelector(`li[data-key="${currentPage - 1}"]`).querySelector("a").className = "page-link bg-primary text-white"
+            document.querySelector(`li[data-key="${currentPage}"]`).querySelector("a").className = "page-link"
             setCurrentPage(currentPage - 1);
         }
     };
@@ -250,8 +254,16 @@ function Note() {
 
                     {/* Numéros de page */}
                     {Array.from({ length: Math.ceil(notes.length / itemsPerPage) }, (_, i) => (
-                        <li key={i} className='page-item'>
-                            <a onClick={() => paginate(i + 1)} className='page-link'>
+                        <li data-key={i+1} key={i} className='page-item'>
+                            <a onClick={() => {
+                                    // Remove #clicked from all links
+                                    document.querySelectorAll(".page-link").forEach((link) => {
+                                    link.className = "page-link";
+                                    });
+                                    // Add #clicked to the clicked link
+                                    event.target.className = "page-link bg-primary text-white";
+                                    paginate(i + 1);
+                                }} className={`page-link ${i === 0 ? 'bg-primary text-white' : ''}`}>
                                 {i + 1}
                             </a>
                         </li>

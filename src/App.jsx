@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Loading from "./Components/loading";
 //import './App.css'
 import AccueilIUT from './Components/accueil'
-import Header from './Components/header'
+import Menu from './Components/navigation/menu'
 import Etudiants from './Components/Etudiants'
 import Enseignants from "./Components/Enseignants"
 import Note from "./Components/Note"
@@ -25,7 +25,7 @@ function App() {
   return (
     <>
     <Router>
-      <Header />
+      <Menu />
       <Routes>
         <Route path="/" element={<AccueilIUT />}/>
         <Route path="/etudiants" element={<Etudiants />}/>
